@@ -1,0 +1,12 @@
+[submodule "dependencies/assimp"]
+	path = dependencies/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "dependencies/GLFW"]
+	path = dependencies/GLFW
+	url = https://github.com/glfw/glfw.git
+[submodule "dependencies/dependencies/GLM"]
+	path = dependencies/dependencies/GLM
+	url = https://github.com/g-truc/glm.git
+[submodule "dependencies/GLM"]
+	path = dependencies/GLM
+	url = https://github.com/g-truc/glm.git
