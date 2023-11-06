@@ -9,7 +9,9 @@ set(STBIMG_DIR ${DEPENDENCIES_DIR}/stbimg)
 set(MyGL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/MyGL)
 set(ASSIMP_DIR ${DEPENDENCIES_DIR}/assimp)
 
-set(MyGL_INCLUDES
+option(MyGL_LITE "Build the lite edition of MyGL that does not include models and doesnt build assimp" OFF)
+
+set(MyGL_INCLUDES PUBLIC
     ${DEPENDENCIES_DIR}
     ${GLFW_DIR}/include
     ${GLAD_DIR}/include
@@ -20,12 +22,15 @@ set(MyGL_INCLUDES
     ${ASSIMP_DIR}/include
 )
 
-# Assimp
-add_subdirectory(${ASSIMP_DIR})
-set(ASSIMP_BUILD_DIR ${PROJECT_BINARY_DIR}/dependencies/assimp)
-set(ASSIMP_CONFIG_LOCATION ${PROJECT_BINARY_DIR}/dependencies/assimp/include/assimp)
-# Move config.h to include directory
-file(COPY ${ASSIMP_CONFIG_LOCATION}/config.h DESTINATION ${ASSIMP_DIR}/include/assimp)
+if(MyGL_Lite)
+    message("Building MyGL Lite")
+    # Assimp
+    add_subdirectory(${ASSIMP_DIR})
+    set(ASSIMP_BUILD_DIR ${PROJECT_BINARY_DIR}/dependencies/assimp)
+    set(ASSIMP_CONFIG_LOCATION ${PROJECT_BINARY_DIR}/dependencies/assimp/include/assimp)
+    # Move config.h to include directory
+    file(COPY ${ASSIMP_CONFIG_LOCATION}/config.h DESTINATION ${ASSIMP_DIR}/include/assimp)
+endif()
 
 # GLFW
 add_subdirectory(${GLFW_DIR})
@@ -47,6 +52,14 @@ target_include_directories(glad PRIVATE ${GLAD_INCLUDE_PATH})
 #MyGL
 file(GLOB MyGL_SOURCES ${MyGL_DIR}/*.cpp)
 
+if(MyGL_Lite)
+    file(GLOB MyGL_SOURCES
+        ${MyGL_DIR}/*.cpp
+        ${MyGL_DIR}/Models/*.cpp
+    )
+endif()
+
+
 option(BUILD_STATIC "Build MyGL as a static library" ON)
 
 if(BUILD_STATIC)
@@ -65,14 +78,17 @@ else()
     add_library(MyGL SHARED
         ${MyGL_SOURCES}
     )
-    #set_target_properties(MyGL PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+    
+    if (MyGL_Lite)
+        # Set macro
+        target_compile_definitions(MyGL PUBLIC MYGL_LITE=1)
+    endif()
 
 endif()
 
 target_include_directories(MyGL PUBLIC
     ${MyGL_INCLUDES}
 )
-
 #GCC
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
     message("Using GCC")
@@ -104,21 +120,26 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 
     set(GLFW_LIB_PATH ${PROJECT_BINARY_DIR}/dependencies/GLFW/src/Debug/glfw3ddll.lib PARENT_SCOPE)
 
-    target_link_libraries(MyGL
-        glfw
-        glad #GLAD
-        ${ASSIMP_LIB_DIR}/*.lib #Link manually because cmake can't find it (assimp puts it inside ASSIMP_LIB_INSTALL_DIR)
-    )
     add_dependencies(MyGL
-        Assimp::assimp
         glad
         glfw
     )
 
-    #Assimp congfig.h
-    target_include_directories(MyGL PRIVATE
-        ${ASSIMP_CONFIG_LOCATION}
+    target_link_libraries(MyGL
+        glfw
+        glad #GLAD
     )
+
+    if (MyGL_Lite)
+        #Assimp congfig.h
+        target_include_directories(MyGL PRIVATE
+            ${ASSIMP_CONFIG_LOCATION}
+        )
+        target_link_libraries(MyGL 
+            ${ASSIMP_LIB_DIR}/*.lib #Link manually because cmake can't find it (assimp puts it inside ASSIMP_LIB_INSTALL_DIR)
+        )
+    endif()
+
     #Export Libraries
     set(MyGL_Libraries
         MyGL

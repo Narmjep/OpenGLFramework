@@ -43,8 +43,7 @@ Texture2D::Texture2D(const std::string& path , TextureType type, GLuint slot , G
     int width, height, nClrChannels;
     unsigned char* bytes = stbi_load(path.c_str(),&width,&height,&nClrChannels,0);
     if (bytes == nullptr) {
-        std::cerr << "Failed to load image " << path << " with the reason: " << stbi_failure_reason() << '\n';
-        return;
+        throw std::invalid_argument("Failed to load image " + path + " with the reason: " + stbi_failure_reason());
     }
     //Find image type
     switch(nClrChannels){
@@ -105,7 +104,7 @@ Texture2D::Texture2D(unsigned char* imageData , int width , int height , int nCh
             GLDbgCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width , height , 0 , GL_RED , GL_UNSIGNED_BYTE , imageData));
             break;
         default:
-            throw std::invalid_argument("The image has an unusual ammount of channels. Failed to create the texture!");
+            throw std::invalid_argument("The image " + path + " has an unusual ammount of channels. Failed to create the texture!");
             return;
             break;
     }

@@ -9,6 +9,13 @@ VertexBuffer::VertexBuffer(const std::vector<Vertex>& vertices){
     GLDbgCall(glBufferData(GL_ARRAY_BUFFER,vertices.size() * sizeof(Vertex),vertices.data(),GL_STATIC_DRAW));
 }
 
+VertexBuffer::VertexBuffer(const void* data , GLsizeiptr size){
+    GLDbgCall(glGenBuffers(1 , &id));
+    Bind();
+    GLDbgCall(glBufferData(GL_ARRAY_BUFFER,size,data,GL_STATIC_DRAW));
+    Unbind();
+}
+
 VertexBuffer::~VertexBuffer(){
     GLDbgCall(glDeleteBuffers(1,&id));
 }

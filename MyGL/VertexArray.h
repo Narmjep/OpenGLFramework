@@ -7,8 +7,7 @@
 
 namespace MyGL{
 
-class MyGLAPI VertexArray
-{
+class MyGLAPI VertexArray{
 public:
 	GLuint id;
 	//Methods

@@ -98,7 +98,7 @@ void Shader::CompileProgram(GLuint shaderID){
         std::cerr << logBuffer << std::endl;
         // Free the memory allocated for the log buffer
         delete[] logBuffer;
-        if(throwExceptionOnCompileError) throw std::runtime_error("Shader compilation failed! See log for details.");
+        if(throwExceptionOnCompileError) throw std::invalid_argument("Shader compilation failed! See log for details.");
     }
 }
 

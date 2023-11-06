@@ -25,7 +25,7 @@ public:
 	 * @param pixelType 
 	 * @param resizeAlgorithm 
 	 * @param repetitionAlgorithm 
-	 * 
+	 * @throw std::invalid_argument if file not found or if the image has an unusual ammount of channels
 	 */
 	Texture2D(const std::string& path , TextureType type,  GLenum slot = 0 , GLint resizeAlgorithm = GL_NEAREST, GLint repetitionAlgorithm = GL_REPEAT);
 	Texture2D(unsigned char* imageData , int width , int height , int nChannels, TextureType type, GLenum slot = 0 , GLint resizeAlgorithm = GL_NEAREST, GLint repetitionAlgorithm = GL_REPEAT);

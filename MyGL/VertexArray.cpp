@@ -24,5 +24,6 @@ void VertexArray::Bind(){
 }
 
 void VertexArray::Unbind(){
+    
     GLDbgCall(glBindVertexArray(0));
 }
