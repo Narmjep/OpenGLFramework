@@ -34,7 +34,7 @@ inline bool GetError(const char* file, const char* func, int line){
 #define GLDbgGetUniformLocation(shader, uniform) GLDbgGetUniformLocationWrapper(shader, uniform, __FILE__ , __LINE__)
 
 static inline GLint GLDbgGetUniformLocationWrapper(MyGL::Shader& shader , const char* uniform, const char* file , int line){
-    GLint ret = glGetUniformLocation(shader.GetShaderID() , uniform);
+    GLint ret = GLDbgCall(glGetUniformLocation(shader.GetShaderID() , uniform));
     if(ret == -1) {
         std::cerr << "OpenGL Error in file: " << file << " ; Line: " << line << "| "; 
         std::cerr << "Couldn't find the uniform \'" << uniform << "\' in shader " << shader.GetVertexShaderPath() << " | " << shader.GetFragmentShaderPath() << '\n';
@@ -43,7 +43,7 @@ static inline GLint GLDbgGetUniformLocationWrapper(MyGL::Shader& shader , const 
 }
 
 static inline GLint GLDbgGetUniformLocationWrapper(MyGL::Shader* shader , const char* uniform, const char* file , int line){
-    GLint ret = glGetUniformLocation(shader->GetShaderID() , uniform);
+    GLint ret = GLDbgCall(glGetUniformLocation(shader->GetShaderID() , uniform));
     if(ret == -1) {
         std::cerr << "OpenGL Error in file: " << file << " ; Line: " << line << "| "; 
         std::cerr << "Couldn't find the uniform \'" << uniform << "\' in shader " << shader->GetVertexShaderPath() << " | " << shader->GetFragmentShaderPath() << '\n';
@@ -52,7 +52,7 @@ static inline GLint GLDbgGetUniformLocationWrapper(MyGL::Shader* shader , const 
 }
 
 static inline GLint GLDbgGetUniformLocationWrapper(GLuint shaderID , const char* uniform, const char* file , int line){
-    GLint ret = glGetUniformLocation(shaderID , uniform);
+    GLint ret = GLDbgCall(glGetUniformLocation(shaderID , uniform));
     if(ret == -1){
         std::cerr << "OpenGL Error in file: " << file << " ; Line: " << line << "| "; 
         std::cerr << "Couldn't find the uniform \'" << uniform << "\'" << '\n';

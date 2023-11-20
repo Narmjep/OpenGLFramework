@@ -9,15 +9,14 @@ Camera::Camera(int width , int height , float aspectRatio , float nearClip , flo
     this->height = height; 
     this->nearClip = nearClip;
     this->farClip = farClip;
-    this->aspectRatio = aspectRatio; 
+    this->aspectRatio = aspectRatio;
+    UpdateMatrices();
 }
 
-void Camera::UpdateMatrix(){
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
-    view = glm::lookAt(position, position + orientation , upDirection);
-    projection = glm::perspective(glm::radians(FOV) , aspectRatio , nearClip , farClip);
-    cameraMatrix = projection * view;
+void Camera::UpdateMatrices(){
+    viewMatrix = glm::lookAt(position, position + orientation , upDirection);
+    projectionMatrix = glm::perspective(glm::radians(FOV) , aspectRatio , nearClip , farClip);
+    cameraMatrix = projectionMatrix * viewMatrix;
 }
 
 void Camera::ExportMatrix(MyGL::Shader& shaderProgram , const char* uniform){
